@@ -43,9 +43,6 @@ function profileOnlyRow(member) {
       <td>N/A</td>
       <td>N/A</td>
       <td>N/A</td>
-      <td>N/A</td>
-      <td>Profile only</td>
-      <td>Not a trade</td>
     </tr>
   `;
 }
@@ -78,13 +75,10 @@ async function loadTrades() {
       <td>${escapeHtml(t.sellerItem)}</td>
       <td>${paymentLabel(t)}</td>
       <td>${middlemanCell(t.middleman)}</td>
-      <td>${MM2.tradeSizeLabel(t.tradeSize)}</td>
-      <td>${t.status}</td>
-      <td>${t.verified ? 'Verified ✅' : t.isTest ? '⚠ Test' : '—'}</td>
     </tr>
   `).join('') : memberDirectory.length
     ? memberDirectory.slice(0, 10).map(profileOnlyRow).join('')
-    : '<tr><td colspan="9" style="text-align:center;color:var(--text-secondary)">No verified Money/Robux-to-item trades recorded yet.</td></tr>';
+    : '<tr><td colspan="6" style="text-align:center;color:var(--text-secondary)">No verified Money/Robux-to-item trades recorded yet.</td></tr>';
 
   document.getElementById('pageInfo').textContent = `Page ${pagination.page} of ${pagination.pages || 1} (${pagination.total} total)`;
 }
