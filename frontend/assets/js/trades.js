@@ -1,6 +1,7 @@
 let currentPage = 1;
 let memberDirectory = [];
 let memberPage = 1;
+let hasRealTrades = false;
 const memberPageSize = 10;
 const middlemanDirectory = [
   { name: 'Nexus', avatar: 'https://images-ext-1.discordapp.net/external/0YuLdkrSFKz-YwUpsuSBoHIYUHyPqst1ktVrn5vNfU8/https/cdn.discordapp.com/avatars/1503592341070676132/943a4104c662e1ae3d3c3da649605c8c.webp?format=webp' },
@@ -67,7 +68,8 @@ async function loadTrades() {
 
   const { trades, pagination } = await MM2.api(`/trades?${params}`);
   const tbody = document.getElementById('tradesBody');
-  tbody.innerHTML = trades.length ? trades.map(t => `
+  hasRealTrades = trades.length > 0;
+  tbody.innerHTML = hasRealTrades ? trades.map(t => `
     <tr>
       <td>${traderCell(t.buyer, t.buyerProfile)}</td>
       <td>${traderCell(t.seller, t.sellerProfile)}</td>
@@ -77,15 +79,18 @@ async function loadTrades() {
       <td>${middlemanCell(t.middleman)}</td>
     </tr>
   `).join('') : memberDirectory.length
-    ? memberDirectory.slice(0, 10).map(profileOnlyRow).join('')
+    ? memberDirectory.slice((memberPage - 1) * memberPageSize, memberPage * memberPageSize).map(profileOnlyRow).join('')
     : '<tr><td colspan="6" style="text-align:center;color:var(--text-secondary)">No verified Money/Robux-to-item trades recorded yet.</td></tr>';
 
-  document.getElementById('pageInfo').textContent = `Page ${pagination.page} of ${pagination.pages || 1} (${pagination.total} total)`;
+  const totalPages = hasRealTrades ? (pagination.pages || 1) : Math.ceil(memberDirectory.length / memberPageSize);
+  document.getElementById('pageInfo').textContent = hasRealTrades
+    ? `Page ${pagination.page} of ${pagination.pages || 1} (${pagination.total} total)`
+    : `Page ${memberPage} of ${totalPages} (${memberDirectory.length} profiles)`;
+  document.getElementById('prevPage').disabled = (hasRealTrades ? currentPage : memberPage) === 1;
+  document.getElementById('nextPage').disabled = (hasRealTrades ? currentPage : memberPage) >= totalPages;
 }
 
 async function loadTradeMembers() {
-  const body = document.getElementById('tradeMembersBody');
-  if (!body) return;
   try {
     let members;
     try {
@@ -101,38 +106,23 @@ async function loadTradeMembers() {
     }));
     const total = members.length;
     memberDirectory = members;
-    document.getElementById('tradeMemberCount').textContent = `${MM2.formatNumber(total)} Discord members`;
-    renderMemberPage();
+    document.title = `Trade History - ${MM2.formatNumber(total)} Discord Members`;
   } catch {
-    body.innerHTML = '<tr><td colspan="3" style="color:var(--text-secondary)">Trader profiles are unavailable.</td></tr>';
+    memberDirectory = [];
   }
-}
-
-function renderMemberPage() {
-  const body = document.getElementById('tradeMembersBody');
-  if (!body || !memberDirectory.length) return;
-  const totalPages = Math.ceil(memberDirectory.length / memberPageSize);
-  memberPage = Math.min(Math.max(memberPage, 1), totalPages);
-  const start = (memberPage - 1) * memberPageSize;
-  const visibleMembers = memberDirectory.slice(start, start + memberPageSize);
-  body.innerHTML = visibleMembers.map(member => `
-    <tr>
-      <td>${traderCell(member.displayName || member.username, member)}</td>
-      <td>@${escapeHtml(member.username)}</td>
-      <td><span class="badge ${member.isOnline ? '' : 'badge-offline'}">${member.isOnline ? 'Online' : 'Offline'}</span></td>
-    </tr>
-  `).join('');
-  document.getElementById('memberPageInfo').textContent = `Page ${memberPage} of ${totalPages}`;
-  document.getElementById('memberPrevPage').disabled = memberPage === 1;
-  document.getElementById('memberNextPage').disabled = memberPage === totalPages;
 }
 
 function bindControls() {
   document.getElementById('applyFilters')?.addEventListener('click', () => { currentPage = 1; loadTrades(); });
-  document.getElementById('prevPage')?.addEventListener('click', () => { if (currentPage > 1) { currentPage -= 1; loadTrades(); } });
-  document.getElementById('nextPage')?.addEventListener('click', () => { currentPage += 1; loadTrades(); });
-  document.getElementById('memberPrevPage')?.addEventListener('click', () => { memberPage -= 1; renderMemberPage(); });
-  document.getElementById('memberNextPage')?.addEventListener('click', () => { memberPage += 1; renderMemberPage(); });
+  document.getElementById('prevPage')?.addEventListener('click', () => {
+    if (hasRealTrades && currentPage > 1) { currentPage -= 1; loadTrades(); }
+    if (!hasRealTrades && memberPage > 1) { memberPage -= 1; loadTrades(); }
+  });
+  document.getElementById('nextPage')?.addEventListener('click', () => {
+    if (hasRealTrades) currentPage += 1;
+    else memberPage += 1;
+    loadTrades();
+  });
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
