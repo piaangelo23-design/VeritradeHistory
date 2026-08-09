@@ -79,6 +79,7 @@ function renderNavbar(activePage = '') {
     { href: '/trades.html', label: 'Trades', id: 'trades' },
     { href: '/market-activity.html', label: 'Market', id: 'market' },
     { href: '/middlemen.html', label: 'Middlemen', id: 'middlemen' },
+    { href: '/members.html', label: 'Members', id: 'members' },
     { href: '/values.html', label: 'Values', id: 'values' },
     { href: '/value-changes.html', label: 'Value Changes', id: 'value-changes' },
     { href: '/new-items.html', label: 'New Items', id: 'new-items' },

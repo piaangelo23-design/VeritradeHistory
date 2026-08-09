@@ -1,5 +1,6 @@
 let middlemen = [];
 let mmIndex = 0;
+let displayedTradeId = null;
 
 function renderLiveTrade(trade) {
   const el = document.getElementById('liveTrade');
@@ -104,6 +105,7 @@ async function initHome() {
   updateStats(stats);
   renderMiddlemenCards(mmList);
   renderLiveTrade(trade?.isTest ? null : trade);
+  displayedTradeId = trade?.tradeId || null;
   rotateVouchReminder();
   setInterval(rotateVouchReminder, 6000);
 
@@ -111,6 +113,7 @@ async function initHome() {
     onTrade: (newTrade) => {
       if (newTrade.isTest) return;
       renderLiveTrade(newTrade);
+      displayedTradeId = newTrade.tradeId;
       MM2.showToast('✓ New Trade Completed', `${newTrade.buyer} ↔ ${newTrade.seller}<br>${newTrade.buyerItem} ↔ ${newTrade.sellerItem}`);
     },
     onStats: updateStats
@@ -120,7 +123,12 @@ async function initHome() {
     try {
       const cfg = await MM2.loadPublicConfig();
       const { trade: latest } = await MM2.api('/trades/latest');
-      if (latest && !latest.isTest) renderLiveTrade(latest);
+      if (latest && !latest.isTest && latest.tradeId !== displayedTradeId) {
+        renderLiveTrade(latest);
+        displayedTradeId = latest.tradeId;
+      } else {
+        renderLiveTrade(null);
+      }
     } catch { /* ignore */ }
   }, 60000);
 }

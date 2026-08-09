@@ -44,6 +44,19 @@ a { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }
 .container { width: min(1200px, 92%); margin: 0 auto; }
 
+.trader-cell { display: flex; align-items: center; gap: 0.55rem; min-width: 150px; }
+.trader-cell > span:last-child { display: grid; gap: 0.05rem; }
+.trader-cell small { color: var(--text-secondary); font-size: 0.72rem; }
+.trader-avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; flex: 0 0 34px; }
+.trader-avatar-fallback { display: inline-grid; place-items: center; background: var(--accent-blue); color: white; font-weight: 700; }
+.member-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
+.member-card { display: flex; align-items: center; gap: 0.85rem; padding: 1rem; }
+.member-avatar { width: 58px; height: 58px; border-radius: 50%; object-fit: cover; background: var(--bg-secondary); }
+.member-details { min-width: 0; }
+.member-details h3 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.member-details p { color: var(--text-secondary); margin: 0.1rem 0 0.45rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.trade-members-section { margin-top: 2rem; }
+
 .glass {
   background: var(--bg-card);
   backdrop-filter: blur(16px);

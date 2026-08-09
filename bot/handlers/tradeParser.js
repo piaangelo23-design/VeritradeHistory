@@ -50,7 +50,7 @@ function parseTradeMessage(content, parserConfig = DEFAULT_PARSER) {
   const paymentType = paymentMatch?.[2]?.toLowerCase().match(/robux|rbx/) ? 'robux' : paymentMatch ? 'money' : null;
   const effectiveValueRaw = valueRaw || (paymentAmount !== null ? String(paymentAmount) : null);
 
-  if (!buyer || !seller || !effectiveValueRaw) return null;
+  if (!buyer || !seller || !effectiveValueRaw || !paymentType || paymentAmount === null) return null;
 
   const { buyerItem, sellerItem } = extractItemBlocks(normalized, buyer, seller);
   if (!buyerItem || !sellerItem) return null;

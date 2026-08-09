@@ -19,6 +19,7 @@ const activitiesRoutes = require('./routes/activities');
 const neblioRoutes = require('./routes/neblio');
 const adminRoutes = require('./routes/admin');
 const externalRoutes = require('./routes/external');
+const membersRoutes = require('./routes/members');
 
 async function seedIfNeeded() {
   const seed = require('../database/seed');
@@ -59,6 +60,7 @@ async function startServer() {
   app.use('/api/bot', botRoutes);
   app.use('/api/trades', tradesRoutes);
   app.use('/api/middlemen', middlemenRoutes);
+  app.use('/api/members', membersRoutes);
   app.use('/api/stats', statsRoutes);
   app.use('/api/activities', activitiesRoutes);
   app.use('/api/neblio', neblioRoutes);

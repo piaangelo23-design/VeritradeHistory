@@ -6,5 +6,6 @@ module.exports = {
   Activity: require('./Activity'),
   SyncLog: require('./SyncLog'),
   WebsiteStats: require('./WebsiteStats'),
-  Settings: require('./Settings')
+  Settings: require('./Settings'),
+  DiscordMember: require('./DiscordMember')
 };

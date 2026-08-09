@@ -134,8 +134,12 @@ async function createVerifiedTrade(payload, options = {}) {
       });
       if (mm) {
         mm.completedTrades += 1;
+        mm.vouches += 1;
         await mm.save();
+        stats.totalVouches += 1;
+        await stats.save();
         if (ioInstance) ioInstance.emit('middleman:updated', mm);
+        if (ioInstance) ioInstance.emit('vouch:update', mm);
       }
     }
 

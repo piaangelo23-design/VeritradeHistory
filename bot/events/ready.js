@@ -1,11 +1,32 @@
 const config = require('../config');
+const fs = require('fs');
 const { parseTradeMessage } = require('../handlers/tradeParser');
 const { processTradeMessage } = require('../handlers/tradeHandler');
-const { reportStatus, fetchSettings, logSync } = require('../handlers/apiClient');
+const { reportStatus, fetchSettings, logSync, syncMembers } = require('../handlers/apiClient');
 
 let parserConfig = null;
 let lastTrade = null;
 let lastSync = null;
+let providedMemberProfiles = [];
+
+function loadProvidedMemberProfiles() {
+  try {
+    providedMemberProfiles = JSON.parse(fs.readFileSync(config.memberListPath, 'utf8'))
+      .filter(member => member?.id && member?.username)
+      .map(member => ({
+        discordId: String(member.id),
+        username: member.username,
+        displayName: member.displayName || member.username,
+        avatar: member.avatarUrl || null,
+        isOnline: false
+      }));
+    console.log(`[Bot] Loaded ${providedMemberProfiles.length} provided Discord profiles`);
+  } catch (error) {
+    providedMemberProfiles = [];
+    console.warn('[Bot] Provided member list unavailable:', error.message);
+  }
+  return providedMemberProfiles;
+}
 
 async function loadParserConfig() {
   try {
@@ -47,6 +68,7 @@ async function runSync(client, source = 'scheduled') {
     : new Date(Date.now() - config.syncInterval * 1000);
   lastSync = new Date().toISOString();
   await loadParserConfig();
+  await syncGuildMembers(client);
   if (config.autoTradesEnabled) {
     try {
       await syncRecentTradeMessages(client, previousSync);
@@ -59,6 +81,30 @@ async function runSync(client, source = 'scheduled') {
     await logSync(`Synchronization completed (${source})`, { source, type: 'sync' });
   } catch (error) {
     console.error('[Bot] Sync log failed:', error.message);
+  }
+}
+
+async function syncGuildMembers(client) {
+  const guild = client.guilds.cache.get(config.guildId);
+  if (!guild) return;
+  try {
+    const members = await guild.members.fetch();
+    const fetchedProfiles = [...members.values()].map((member) => ({
+      discordId: member.id,
+      username: member.user.username,
+      displayName: member.displayName,
+      avatar: member.displayAvatarURL({ extension: 'png', size: 128 }),
+      isOnline: member.presence?.status === 'online'
+    }));
+    const providedById = new Map(providedMemberProfiles.map(member => [member.discordId, member]));
+    const payload = fetchedProfiles.map(member => ({
+      ...member,
+      ...(providedById.get(member.discordId) || {})
+    }));
+    await syncMembers(guild.id, payload);
+    console.log(`[Bot] Synced ${payload.length} Discord members`);
+  } catch (error) {
+    console.error('[Bot] Member sync failed:', error.message);
   }
 }
 
@@ -81,7 +127,7 @@ async function handleMessage(message, client) {
   if (!parserConfig) await loadParserConfig();
 
   try {
-    const result = await processTradeMessage(message, parserConfig);
+    const result = await processTradeMessage(message, parserConfig, { profileDirectory: providedMemberProfiles });
     if (result?.trade && !result.duplicate && !result.skipped) {
       lastTrade = result.trade.completedAt || new Date().toISOString();
       console.log('[Bot] Verified trade saved:', result.trade.tradeId);
@@ -104,6 +150,8 @@ module.exports = {
     };
 
     await loadParserConfig();
+    loadProvidedMemberProfiles();
+    await syncGuildMembers(client);
     await updateStatus(client);
 
     setInterval(() => runSync(client, 'interval'), config.syncInterval * 1000);

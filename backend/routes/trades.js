@@ -22,6 +22,7 @@ router.get('/', async (req, res) => {
 
     const query = {};
     if (includeTest !== 'true') query.isTest = false;
+    query.paymentType = { $in: ['robux', 'money'] };
 
     if (search) {
       query.$or = [
@@ -71,7 +72,11 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/latest', async (req, res) => {
-  const trade = await Trade.findOne({ isTest: false, verified: true }).sort({ completedAt: -1 });
+  const trade = await Trade.findOne({
+    isTest: false,
+    verified: true,
+    paymentType: { $in: ['robux', 'money'] }
+  }).sort({ completedAt: -1 });
   return res.json({ trade });
 });
 

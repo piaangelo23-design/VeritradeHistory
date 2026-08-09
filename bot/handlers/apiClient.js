@@ -38,4 +38,9 @@ async function fetchSettings() {
   return response.data;
 }
 
-module.exports = { submitTrade, reportStatus, logSync, checkDuplicate, fetchSettings };
+async function syncMembers(guildId, members) {
+  const response = await botClient.post('/members/sync', { guildId, members });
+  return response.data;
+}
+
+module.exports = { submitTrade, reportStatus, logSync, checkDuplicate, fetchSettings, syncMembers };

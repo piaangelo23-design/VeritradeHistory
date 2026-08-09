@@ -2,6 +2,54 @@ const { parseTradeMessage } = require('./tradeParser');
 const { validateParsedTrade } = require('./tradeValidator');
 const { submitTrade, checkDuplicate, logSync } = require('./apiClient');
 
+function profileFromMember(member, fallbackName) {
+  if (!member) return { username: fallbackName };
+  return {
+    id: member.id,
+    username: member.user.username,
+    displayName: member.displayName,
+    avatar: member.displayAvatarURL({ extension: 'png', size: 128 })
+  };
+}
+
+async function findMember(guild, name) {
+  if (!guild || !name) return null;
+  const normalized = name.replace(/^<@!?|>$/g, '').trim().toLowerCase();
+  const cached = guild.members.cache.find((member) => [
+    member.id,
+    member.user.username,
+    member.displayName,
+    member.user.tag
+  ].some((value) => String(value).toLowerCase() === normalized));
+  if (cached) return cached;
+
+  try {
+    const matches = await guild.members.fetch({ query: name, limit: 10 });
+    return matches.find((member) => [member.user.username, member.displayName, member.user.tag]
+      .some((value) => String(value).toLowerCase() === normalized)) || null;
+  } catch {
+    return null;
+  }
+}
+
+async function resolveTraderProfiles(message, parsed, profileDirectory = []) {
+  const provided = (name) => {
+    const normalized = String(name).toLowerCase();
+    return profileDirectory.find(profile => [profile.discordId, profile.username, profile.displayName]
+      .some(value => String(value).toLowerCase() === normalized));
+  };
+  const [buyerMember, sellerMember] = await Promise.all([
+    findMember(message.guild, parsed.buyer),
+    findMember(message.guild, parsed.seller)
+  ]);
+  const buyerProvided = provided(parsed.buyer);
+  const sellerProvided = provided(parsed.seller);
+  return {
+    buyer: buyerProvided || profileFromMember(buyerMember, parsed.buyer),
+    seller: sellerProvided || profileFromMember(sellerMember, parsed.seller)
+  };
+}
+
 async function processTradeMessage(message, parserConfig, options = {}) {
   if (options.isTest) {
     const trade = {
@@ -29,8 +77,12 @@ async function processTradeMessage(message, parserConfig, options = {}) {
     return { duplicate: true, trade: duplicateCheck.trade };
   }
 
+  const profiles = await resolveTraderProfiles(message, parsed, options.profileDirectory);
+
   const payload = {
     ...parsed,
+    buyerProfile: profiles.buyer,
+    sellerProfile: profiles.seller,
     tradeId: message.id,
     externalTradeId: message.id,
     discordMessageId: message.id,

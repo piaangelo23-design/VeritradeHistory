@@ -1,5 +1,5 @@
 const express = require('express');
-const { Trade } = require('../models');
+const { Trade, DiscordMember } = require('../models');
 const { createVerifiedTrade } = require('../services/tradeService');
 const { validateTradePayload } = require('../middleware/validate');
 const { requireApiSecret } = require('../middleware/auth');
@@ -34,6 +34,27 @@ router.post('/status', botLimiter, requireApiSecret, async (req, res) => {
   } catch (error) {
     console.error('[Bot API] Status update error:', error);
     return res.status(500).json({ error: 'Failed to update status' });
+  }
+});
+
+router.post('/members/sync', botLimiter, requireApiSecret, async (req, res) => {
+  try {
+    const members = Array.isArray(req.body.members) ? req.body.members : [];
+    const guildId = String(req.body.guildId || '').trim();
+    if (!guildId || !members.length) return res.status(400).json({ error: 'guildId and members are required' });
+
+    await DiscordMember.updateMany({ guildId }, { $set: { active: false } });
+    await DiscordMember.bulkWrite(members.map((member) => ({
+      updateOne: {
+        filter: { discordId: String(member.discordId) },
+        update: { $set: { ...member, guildId, active: true, lastSyncedAt: new Date() } },
+        upsert: true
+      }
+    })));
+    return res.json({ success: true, total: members.length });
+  } catch (error) {
+    console.error('[Bot API] Member sync error:', error);
+    return res.status(500).json({ error: 'Failed to sync Discord members' });
   }
 });
 
