@@ -1,5 +1,7 @@
 let currentPage = 1;
 let memberDirectory = [];
+let memberPage = 1;
+const memberPageSize = 10;
 const middlemanDirectory = [
   { name: 'Nexus', avatar: 'https://images-ext-1.discordapp.net/external/0YuLdkrSFKz-YwUpsuSBoHIYUHyPqst1ktVrn5vNfU8/https/cdn.discordapp.com/avatars/1503592341070676132/943a4104c662e1ae3d3c3da649605c8c.webp?format=webp' },
   { name: '[MM] Sheikh Yazan', avatar: 'https://images-ext-1.discordapp.net/external/TKPwvPdy3ucDh5LY8zJwYN5GkRVknya3bVTZLJ3FjeA/https/cdn.discordapp.com/avatars/1258316275554324512/82b9447ddd71839d5efe87351ca54d67.webp?format=webp' },
@@ -70,8 +72,8 @@ async function loadTrades() {
 }
 
 async function loadTradeMembers() {
-  const grid = document.getElementById('tradeMembersGrid');
-  if (!grid) return;
+  const body = document.getElementById('tradeMembersBody');
+  if (!body) return;
   try {
     let members;
     try {
@@ -88,25 +90,37 @@ async function loadTradeMembers() {
     const total = members.length;
     memberDirectory = members;
     document.getElementById('tradeMemberCount').textContent = `${MM2.formatNumber(total)} trader profiles`;
-    grid.innerHTML = members.length ? members.map((member) => `
-      <article class="member-card glass">
-        <img class="member-avatar" src="${escapeHtml(member.avatar)}" alt="">
-        <div class="member-details">
-          <h3>${escapeHtml(member.displayName || member.username)}</h3>
-          <p>@${escapeHtml(member.username)}</p>
-          <span class="badge ${member.isOnline ? '' : 'badge-offline'}">${member.isOnline ? 'Online' : 'Offline'}</span>
-        </div>
-      </article>
-    `).join('') : '<p style="color:var(--text-secondary)">No Discord members synced yet.</p>';
+    renderMemberPage();
   } catch {
-    grid.innerHTML = '<p style="color:var(--text-secondary)">Discord members will appear after the bot syncs the server.</p>';
+    body.innerHTML = '<tr><td colspan="3" style="color:var(--text-secondary)">Trader profiles are unavailable.</td></tr>';
   }
+}
+
+function renderMemberPage() {
+  const body = document.getElementById('tradeMembersBody');
+  if (!body || !memberDirectory.length) return;
+  const totalPages = Math.ceil(memberDirectory.length / memberPageSize);
+  memberPage = Math.min(Math.max(memberPage, 1), totalPages);
+  const start = (memberPage - 1) * memberPageSize;
+  const visibleMembers = memberDirectory.slice(start, start + memberPageSize);
+  body.innerHTML = visibleMembers.map(member => `
+    <tr>
+      <td>${traderCell(member.displayName || member.username, member)}</td>
+      <td>@${escapeHtml(member.username)}</td>
+      <td><span class="badge ${member.isOnline ? '' : 'badge-offline'}">${member.isOnline ? 'Online' : 'Offline'}</span></td>
+    </tr>
+  `).join('');
+  document.getElementById('memberPageInfo').textContent = `Page ${memberPage} of ${totalPages}`;
+  document.getElementById('memberPrevPage').disabled = memberPage === 1;
+  document.getElementById('memberNextPage').disabled = memberPage === totalPages;
 }
 
 function bindControls() {
   document.getElementById('applyFilters')?.addEventListener('click', () => { currentPage = 1; loadTrades(); });
   document.getElementById('prevPage')?.addEventListener('click', () => { if (currentPage > 1) { currentPage -= 1; loadTrades(); } });
   document.getElementById('nextPage')?.addEventListener('click', () => { currentPage += 1; loadTrades(); });
+  document.getElementById('memberPrevPage')?.addEventListener('click', () => { memberPage -= 1; renderMemberPage(); });
+  document.getElementById('memberNextPage')?.addEventListener('click', () => { memberPage += 1; renderMemberPage(); });
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

@@ -55,7 +55,17 @@
         <h2>Trader Profiles</h2>
         <span id="tradeMemberCount" class="badge badge-offline">Loading...</span>
       </div>
-      <div id="tradeMembersGrid" class="member-grid"></div>
+      <div class="table-wrap glass" style="padding:0.5rem">
+        <table>
+          <thead><tr><th>Profile</th><th>Username</th><th>Status</th></tr></thead>
+          <tbody id="tradeMembersBody"></tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <button id="memberPrevPage" class="btn btn-outline">Previous</button>
+        <span id="memberPageInfo"></span>
+        <button id="memberNextPage" class="btn btn-outline">Next</button>
+      </div>
     </section>
     <div class="pagination">
       <button id="prevPage" class="btn btn-outline">Previous</button>
