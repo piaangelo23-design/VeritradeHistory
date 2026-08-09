@@ -87,7 +87,7 @@ async function loadTradeMembers() {
     }));
     const total = members.length;
     memberDirectory = members;
-    document.getElementById('tradeMemberCount').textContent = `${MM2.formatNumber(total)} members`;
+    document.getElementById('tradeMemberCount').textContent = `${MM2.formatNumber(total)} trader profiles`;
     grid.innerHTML = members.length ? members.map((member) => `
       <article class="member-card glass">
         <img class="member-avatar" src="${escapeHtml(member.avatar)}" alt="">
