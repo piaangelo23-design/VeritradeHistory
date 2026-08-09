@@ -52,11 +52,22 @@ async function seed() {
   }
 
   for (const mm of MIDDLEMEN) {
-    await Middleman.findOneAndUpdate(
-      { slug: mm.slug },
-      { $setOnInsert: { vouches: 0, completedTrades: 0, successRate: 100, isTrusted: true, active: true }, $set: mm },
-      { upsert: true, new: true }
-    );
+    const existing = await Middleman.findOne({ $or: [{ slug: mm.slug }, { name: mm.name }] });
+    if (existing) {
+      await Middleman.updateOne(
+        { _id: existing._id },
+        { $set: mm }
+      );
+    } else {
+      await Middleman.create({
+        ...mm,
+        vouches: 0,
+        completedTrades: 0,
+        successRate: 100,
+        isTrusted: true,
+        active: true
+      });
+    }
   }
 
   await Settings.findOneAndUpdate(
