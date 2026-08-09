@@ -34,6 +34,22 @@ function paymentLabel(trade) {
   return trade.paymentType === 'robux' ? 'Robux' : trade.paymentType === 'money' ? 'Money' : 'N/A';
 }
 
+function profileOnlyRow(member) {
+  return `
+    <tr class="profile-only-row">
+      <td>${traderCell(member.displayName || member.username, member)}</td>
+      <td>@${escapeHtml(member.username)}</td>
+      <td>N/A</td>
+      <td>N/A</td>
+      <td>N/A</td>
+      <td>N/A</td>
+      <td>N/A</td>
+      <td>Profile only</td>
+      <td>Not a trade</td>
+    </tr>
+  `;
+}
+
 function middlemanCell(name) {
   const normalized = String(name || '').toLowerCase();
   const profile = middlemanDirectory.find(item => normalized.includes(item.name.toLowerCase()) || item.name.toLowerCase().includes(normalized));
@@ -66,7 +82,9 @@ async function loadTrades() {
       <td>${t.status}</td>
       <td>${t.verified ? 'Verified ✅' : t.isTest ? '⚠ Test' : '—'}</td>
     </tr>
-  `).join('') : '<tr><td colspan="9" style="text-align:center;color:var(--text-secondary)">No verified Money/Robux-to-item trades recorded yet.</td></tr>';
+  `).join('') : memberDirectory.length
+    ? memberDirectory.slice(0, 10).map(profileOnlyRow).join('')
+    : '<tr><td colspan="9" style="text-align:center;color:var(--text-secondary)">No verified Money/Robux-to-item trades recorded yet.</td></tr>';
 
   document.getElementById('pageInfo').textContent = `Page ${pagination.page} of ${pagination.pages || 1} (${pagination.total} total)`;
 }
@@ -126,6 +144,7 @@ function bindControls() {
 document.addEventListener('DOMContentLoaded', async () => {
   MM2.mountLayout('trades');
   bindControls();
-  await Promise.all([loadTradeMembers(), loadTrades()]);
+  await loadTradeMembers();
+  await loadTrades();
   MM2.initSocket({ onTrade: () => loadTrades() });
 });
