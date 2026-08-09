@@ -107,7 +107,7 @@ async function loadTradeMembers() {
     }));
     const total = members.length;
     memberDirectory = members;
-    document.getElementById('tradeMemberCount').textContent = `${MM2.formatNumber(total)} trader profiles`;
+    document.getElementById('tradeMemberCount').textContent = `${MM2.formatNumber(total)} Discord members`;
     renderMemberPage();
   } catch {
     body.innerHTML = '<tr><td colspan="3" style="color:var(--text-secondary)">Trader profiles are unavailable.</td></tr>';
