@@ -65,12 +65,12 @@ async function seed() {
         completedTrades: 0,
         successRate: 100,
         isTrusted: true,
-        active: true
+        active: !mm.isPlaceholder
       });
     }
   }
 
-  await Settings.findOneAndUpdate(
+  const settings = await Settings.findOneAndUpdate(
     { key: 'app' },
     {
       $setOnInsert: {
@@ -82,8 +82,18 @@ async function seed() {
         mediumTradeMax: 5000
       }
     },
-    { upsert: true }
+    { upsert: true, new: true }
   );
+
+  if ((settings.seedVersion || 0) < 1) {
+    await Middleman.updateMany(
+      { slug: { $in: MIDDLEMEN.filter(mm => !mm.isPlaceholder).map(mm => mm.slug) } },
+      { $set: { active: true } }
+    );
+    await Middleman.updateOne({ slug: 'placeholder' }, { $set: { active: false } });
+    settings.seedVersion = 1;
+    await settings.save();
+  }
 
   await WebsiteStats.findOneAndUpdate(
     { key: 'global' },

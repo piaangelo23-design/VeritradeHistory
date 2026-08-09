@@ -34,6 +34,7 @@ const settingsSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
   }],
   neblioLastUpdate: Date,
+  seedVersion: { type: Number, default: 0 },
   updatedAt: { type: Date, default: Date.now }
 });
 
