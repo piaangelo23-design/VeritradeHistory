@@ -79,7 +79,7 @@ async function seed() {
         trackingEnabled: config.trackingEnabled,
         syncInterval: config.syncInterval,
         smallTradeMax: 500,
-        mediumTradeMax: 5000
+        mediumTradeMax: 2999
       }
     },
     { upsert: true, new: true }
@@ -95,9 +95,15 @@ async function seed() {
     await settings.save();
   }
 
+  if ((settings.seedVersion || 0) < 2) {
+    settings.mediumTradeMax = 2999;
+    settings.seedVersion = 2;
+    await settings.save();
+  }
+
   await WebsiteStats.findOneAndUpdate(
     { key: 'global' },
-    { $setOnInsert: { totalVisits: 0 } },
+    { $setOnInsert: { totalVisits: 0, visitBaseline: config.visitBaseline, memberBaseline: config.memberBaseline } },
     { upsert: true }
   );
 

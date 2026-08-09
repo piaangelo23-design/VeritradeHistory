@@ -25,15 +25,16 @@ function renderLiveTrade(trade) {
 }
 
 function updateStats(stats) {
+  const displayedVisits = (stats.visitBaseline || 0) + (stats.totalVisits || 0);
+  const displayedMembers = stats.totalMembers || stats.memberBaseline || 0;
   const map = {
     statSmall: stats.smallTrades,
     statMedium: stats.mediumTrades,
     statLarge: stats.largeTrades,
     statTotalTrades: stats.totalTrades,
     statVouches: stats.totalVouches,
-    statVisits: stats.totalVisits,
-    statMembers: stats.totalMembers,
-    statOnline: stats.onlineMembers,
+    statVisits: displayedVisits,
+    statMembers: displayedMembers,
     statActiveMM: stats.activeMiddlemen,
     statValueChanges: stats.valueChanges,
     statNewItems: stats.newItems

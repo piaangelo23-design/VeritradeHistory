@@ -31,13 +31,17 @@ async function processTradeMessage(message, parserConfig, options = {}) {
 
   const payload = {
     ...parsed,
+    tradeId: message.id,
+    externalTradeId: message.id,
     discordMessageId: message.id,
     guildId: message.guildId,
     channelId: message.channelId,
     messageUrl: message.url,
     source: 'discord',
+    verificationSource: 'discord-bot-verified-format',
     isTest: false,
     verified: true,
+    verifiedAt: message.createdAt.toISOString(),
     completedAt: message.createdAt.toISOString()
   };
 

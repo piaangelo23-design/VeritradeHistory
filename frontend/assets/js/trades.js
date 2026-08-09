@@ -22,7 +22,7 @@ async function loadTrades() {
       <td>${t.seller}</td>
       <td>${t.buyerItem}</td>
       <td>${t.sellerItem}</td>
-      <td>${MM2.formatNumber(t.value)}</td>
+      <td>${t.paymentType ? `${MM2.formatNumber(t.paymentAmount || t.value)} ${t.paymentType}` : MM2.formatNumber(t.value)}</td>
       <td>${MM2.middlemanDisplay(t.middleman)}</td>
       <td>${MM2.tradeSizeLabel(t.tradeSize)}</td>
       <td>${t.status}</td>

@@ -15,6 +15,12 @@ async function updateBotStatus(statusPayload) {
   };
   settings.updatedAt = new Date();
   await settings.save();
+  if (Number.isFinite(Number(statusPayload.memberCount))) {
+    const stats = await getStats();
+    stats.totalMembers = Number(statusPayload.memberCount);
+    stats.updatedAt = new Date();
+    await stats.save();
+  }
   return settings.botStatus;
 }
 

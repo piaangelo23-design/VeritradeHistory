@@ -12,6 +12,8 @@ module.exports = {
   tradeChannelId: process.env.TRADE_CHANNEL_ID || '',
   syncInterval: parseInt(process.env.SYNC_INTERVAL, 10) || 60,
   trackingEnabled: process.env.TRACKING_ENABLED !== 'false',
+  memberBaseline: parseInt(process.env.DISCORD_MEMBER_BASELINE, 10) || 0,
+  visitBaseline: parseInt(process.env.WEBSITE_VISIT_BASELINE, 10) || 0,
   discordInvite: process.env.DISCORD_INVITE || 'https://discord.gg/HpPSfvjmmT',
   neblioApiBase: process.env.NEBLIO_API_BASE || '',
   neblioEnabled: process.env.NEBLIO_ENABLED !== 'false',

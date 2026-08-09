@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 const { Trade, Activity, WebsiteStats, Settings, Middleman } = require('../models');
+const config = require('../config');
 
 let ioInstance = null;
 
@@ -9,7 +10,7 @@ function setIO(io) {
 
 function getTradeSize(value, settings) {
   const smallMax = settings?.smallTradeMax ?? 500;
-  const mediumMax = settings?.mediumTradeMax ?? 5000;
+  const mediumMax = settings?.mediumTradeMax ?? 2999;
   if (value <= smallMax) return 'small';
   if (value <= mediumMax) return 'medium';
   return 'large';
@@ -26,7 +27,17 @@ async function getSettings() {
 async function getStats() {
   let stats = await WebsiteStats.findOne({ key: 'global' });
   if (!stats) {
-    stats = await WebsiteStats.create({ key: 'global', totalVisits: 0 });
+    stats = await WebsiteStats.create({
+      key: 'global',
+      totalVisits: 0,
+      visitBaseline: config.visitBaseline,
+      memberBaseline: config.memberBaseline
+    });
+  } else {
+    let changed = false;
+    if (!stats.visitBaseline && config.visitBaseline) { stats.visitBaseline = config.visitBaseline; changed = true; }
+    if (!stats.memberBaseline && config.memberBaseline) { stats.memberBaseline = config.memberBaseline; changed = true; }
+    if (changed) await stats.save();
   }
   return stats;
 }

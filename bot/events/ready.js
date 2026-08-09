@@ -27,6 +27,7 @@ async function updateStatus(client, extra = {}) {
     connected: client.isReady(),
     guildConnected: Boolean(guild),
     channelAccessible: Boolean(channel && permissions?.has('ViewChannel') && permissions?.has('ReadMessageHistory')),
+    memberCount: guild?.memberCount || 0,
     trackingActive: config.trackingEnabled,
     lastTrade,
     lastSync,
@@ -41,14 +42,27 @@ async function updateStatus(client, extra = {}) {
 }
 
 async function runSync(client, source = 'scheduled') {
+  const previousSync = lastSync ? new Date(lastSync) : new Date();
   lastSync = new Date().toISOString();
   await loadParserConfig();
+  if (config.autoTradesEnabled) await syncRecentTradeMessages(client, previousSync);
   await updateStatus(client);
   try {
     await logSync(`Synchronization completed (${source})`, { source, type: 'sync' });
   } catch (error) {
     console.error('[Bot] Sync log failed:', error.message);
   }
+}
+
+async function syncRecentTradeMessages(client, since) {
+  const guild = client.guilds.cache.get(config.guildId);
+  const channel = guild?.channels.cache.get(config.tradeChannelId);
+  if (!channel?.messages?.fetch) return;
+  const messages = await channel.messages.fetch({ limit: 100 });
+  const recent = [...messages.values()]
+    .filter(message => message.createdAt > since)
+    .sort((a, b) => a.createdTimestamp - b.createdTimestamp);
+  for (const message of recent) await handleMessage(message, client);
 }
 
 async function handleMessage(message, client) {

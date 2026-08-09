@@ -44,13 +44,17 @@ function parseTradeMessage(content, parserConfig = DEFAULT_PARSER) {
   const valueRaw = extractField(normalized, parser.fields.value);
   const status = extractField(normalized, parser.fields.status) || 'Completed';
   const middlemanRaw = extractField(normalized, parser.fields.middleman);
+  const paymentMatch = normalized.match(/(?:payment|paid|robux|money)\s*:\s*([\d,._]+)\s*(robux|rbx|money|usd|dollars?)?/i);
+  const paymentAmount = paymentMatch ? Number(paymentMatch[1].replace(/[,_\s]/g, '')) : null;
+  const paymentType = paymentMatch?.[2]?.toLowerCase().match(/robux|rbx/) ? 'robux' : paymentMatch ? 'money' : null;
+  const effectiveValueRaw = valueRaw || (paymentAmount !== null ? String(paymentAmount) : null);
 
-  if (!buyer || !seller || !valueRaw) return null;
+  if (!buyer || !seller || !effectiveValueRaw) return null;
 
   const { buyerItem, sellerItem } = extractItemBlocks(normalized, buyer, seller);
   if (!buyerItem || !sellerItem) return null;
 
-  const value = Number(String(valueRaw).replace(/[,_\s]/g, ''));
+  const value = Number(String(effectiveValueRaw).replace(/[,_\s]/g, ''));
   if (Number.isNaN(value)) return null;
 
   if (!/completed/i.test(status)) return null;
@@ -69,6 +73,8 @@ function parseTradeMessage(content, parserConfig = DEFAULT_PARSER) {
     buyerItem,
     sellerItem,
     value,
+    paymentType,
+    paymentAmount,
     status,
     middleman
   };
