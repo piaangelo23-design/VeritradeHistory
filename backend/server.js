@@ -8,7 +8,7 @@ const compression = require('compression');
 const { Server } = require('socket.io');
 const config = require('./config');
 const { initSocket } = require('./websocket');
-const { setIO } = require('./services/tradeService');
+const { setIO, recalculateStats } = require('./services/tradeService');
 const { apiLimiter } = require('./middleware/rateLimit');
 
 const botRoutes = require('./routes/bot');
@@ -94,6 +94,8 @@ async function startServer() {
     await mongoose.connect(config.mongoUri);
     console.log('[MongoDB] Connected');
     await seedIfNeeded();
+    await recalculateStats();
+    console.log('[Stats] Recalculated');
   } catch (error) {
     console.error('[MongoDB] Connection failed:', error.message);
     process.exit(1);

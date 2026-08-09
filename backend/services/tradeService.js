@@ -175,7 +175,7 @@ async function recalculateStats() {
   stats.totalTrades = realTrades.length;
   const middlemen = await Middleman.find({ active: true });
   stats.totalVouches = middlemen.reduce((sum, m) => sum + (m.vouches || 0), 0);
-  stats.activeMiddlemen = middlemen.filter(m => m.isOnline && !m.isPlaceholder).length;
+  stats.activeMiddlemen = middlemen.filter(m => m.active && !m.isPlaceholder).length;
   stats.updatedAt = new Date();
   await stats.save();
   return stats;
