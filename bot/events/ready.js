@@ -42,10 +42,18 @@ async function updateStatus(client, extra = {}) {
 }
 
 async function runSync(client, source = 'scheduled') {
-  const previousSync = lastSync ? new Date(lastSync) : new Date();
+  const previousSync = lastSync
+    ? new Date(lastSync)
+    : new Date(Date.now() - config.syncInterval * 1000);
   lastSync = new Date().toISOString();
   await loadParserConfig();
-  if (config.autoTradesEnabled) await syncRecentTradeMessages(client, previousSync);
+  if (config.autoTradesEnabled) {
+    try {
+      await syncRecentTradeMessages(client, previousSync);
+    } catch (error) {
+      console.error('[Bot] Trade sync failed:', error.message);
+    }
+  }
   await updateStatus(client);
   try {
     await logSync(`Synchronization completed (${source})`, { source, type: 'sync' });
@@ -66,7 +74,6 @@ async function syncRecentTradeMessages(client, since) {
 }
 
 async function handleMessage(message, client) {
-  if (message.author.bot) return;
   if (message.guildId !== config.guildId) return;
   if (message.channelId !== config.tradeChannelId) return;
   if (!config.trackingEnabled) return;

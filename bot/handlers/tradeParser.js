@@ -44,7 +44,8 @@ function parseTradeMessage(content, parserConfig = DEFAULT_PARSER) {
   const valueRaw = extractField(normalized, parser.fields.value);
   const status = extractField(normalized, parser.fields.status) || 'Completed';
   const middlemanRaw = extractField(normalized, parser.fields.middleman);
-  const paymentMatch = normalized.match(/(?:payment|paid|robux|money)\s*:\s*\$?([\d,._]+)\s*(robux|rbx|money|usd|dollars?)?/i);
+  const paymentMatch = normalized.match(/(?:payment|paid|robux|money)\s*:?\s*\$?([\d,._]+)\s*(robux|rbx|money|usd|dollars?)?/i)
+    || normalized.match(/\$?([\d,._]+)\s*(robux|rbx|usd|dollars?)/i);
   const paymentAmount = paymentMatch ? Number(paymentMatch[1].replace(/[,_\s]/g, '')) : null;
   const paymentType = paymentMatch?.[2]?.toLowerCase().match(/robux|rbx/) ? 'robux' : paymentMatch ? 'money' : null;
   const effectiveValueRaw = valueRaw || (paymentAmount !== null ? String(paymentAmount) : null);

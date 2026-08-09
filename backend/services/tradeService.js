@@ -31,12 +31,18 @@ async function getStats() {
       key: 'global',
       totalVisits: 0,
       visitBaseline: config.visitBaseline,
-      memberBaseline: config.memberBaseline
+      memberBaseline: config.memberBaseline,
+      smallTradeBaseline: config.smallTradeBaseline,
+      mediumTradeBaseline: config.mediumTradeBaseline,
+      largeTradeBaseline: config.largeTradeBaseline
     });
   } else {
     let changed = false;
     if (!stats.visitBaseline && config.visitBaseline) { stats.visitBaseline = config.visitBaseline; changed = true; }
     if (!stats.memberBaseline && config.memberBaseline) { stats.memberBaseline = config.memberBaseline; changed = true; }
+    if (!stats.smallTradeBaseline && config.smallTradeBaseline) { stats.smallTradeBaseline = config.smallTradeBaseline; changed = true; }
+    if (!stats.mediumTradeBaseline && config.mediumTradeBaseline) { stats.mediumTradeBaseline = config.mediumTradeBaseline; changed = true; }
+    if (!stats.largeTradeBaseline && config.largeTradeBaseline) { stats.largeTradeBaseline = config.largeTradeBaseline; changed = true; }
     if (changed) await stats.save();
   }
   return stats;
@@ -180,10 +186,10 @@ async function processExternalTrade(payload) {
 async function recalculateStats() {
   const realTrades = await Trade.find({ isTest: false, verified: true });
   const stats = await getStats();
-  stats.smallTrades = realTrades.filter(t => t.tradeSize === 'small').length;
-  stats.mediumTrades = realTrades.filter(t => t.tradeSize === 'medium').length;
-  stats.largeTrades = realTrades.filter(t => t.tradeSize === 'large').length;
-  stats.totalTrades = realTrades.length;
+  stats.smallTrades = (stats.smallTradeBaseline || 0) + realTrades.filter(t => t.tradeSize === 'small').length;
+  stats.mediumTrades = (stats.mediumTradeBaseline || 0) + realTrades.filter(t => t.tradeSize === 'medium').length;
+  stats.largeTrades = (stats.largeTradeBaseline || 0) + realTrades.filter(t => t.tradeSize === 'large').length;
+  stats.totalTrades = stats.smallTrades + stats.mediumTrades + stats.largeTrades;
   const middlemen = await Middleman.find({ active: true });
   stats.totalVouches = middlemen.reduce((sum, m) => sum + (m.vouches || 0), 0);
   stats.activeMiddlemen = middlemen.filter(m => m.active && !m.isPlaceholder).length;

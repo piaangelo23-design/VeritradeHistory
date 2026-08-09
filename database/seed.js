@@ -8,7 +8,7 @@ const MIDDLEMEN = [
     slug: 'nexus',
     name: 'Nexus',
     displayName: 'Nexus',
-    avatar: 'https://media.discordapp.net/attachments/1474771451554037801/1525567093863616634/image.png?ex=6a796d52&is=6a781bd2&hm=106bc29289882c1c7526fb808349dd837e19389093908d771d7189f47c7dd3d2&=&format=webp&quality=lossless',
+    avatar: 'https://images-ext-1.discordapp.net/external/0YuLdkrSFKz-YwUpsuSBoHIYUHyPqst1ktVrn5vNfU8/https/cdn.discordapp.com/avatars/1503592341070676132/943a4104c662e1ae3d3c3da649605c8c.webp?format=webp',
     aliases: ['Nexus'],
     sortOrder: 1
   },
@@ -16,7 +16,7 @@ const MIDDLEMEN = [
     slug: 'sheikh-yazan',
     name: '[MM] Sheikh Yazan',
     displayName: 'Sheikh Yazan',
-    avatar: 'https://media.discordapp.net/attachments/1474771451554037801/1525567093863616634/image.png?ex=6a796d52&is=6a781bd2&hm=106bc29289882c1c7526fb808349dd837e19389093908d771d7189f47c7dd3d2&=&format=webp&quality=lossless',
+    avatar: 'https://images-ext-1.discordapp.net/external/TKPwvPdy3ucDh5LY8zJwYN5GkRVknya3bVTZLJ3FjeA/https/cdn.discordapp.com/avatars/1258316275554324512/82b9447ddd71839d5efe87351ca54d67.webp?format=webp',
     aliases: ['Sheikh Yazan', '[MM] Sheikh Yazan'],
     sortOrder: 2
   },
@@ -24,7 +24,7 @@ const MIDDLEMEN = [
     slug: 'ax-kane',
     name: 'Ax^Kane ❣MM❣:✅',
     displayName: 'Ax^Kane',
-    avatar: 'https://media.discordapp.net/attachments/1474771451554037801/1525567093863616634/image.png?ex=6a796d52&is=6a781bd2&hm=106bc29289882c1c7526fb808349dd837e19389093908d771d7189f47c7dd3d2&=&format=webp&quality=lossless',
+    avatar: 'https://images-ext-1.discordapp.net/external/Gvu61eOBzyNhSSGmbrX4WK7DsHVtLmwJ_5jy6VrDBn8/https/cdn.discordapp.com/avatars/1393307310428000286/96504c97e686e1394d3a02c70e71f43a.webp?format=webp',
     aliases: ['Ax^Kane', 'Ax Kane'],
     sortOrder: 3
   },
@@ -32,7 +32,7 @@ const MIDDLEMEN = [
     slug: 'bka-an-die-macht',
     name: 'BKA AN DIE MACHT',
     displayName: 'BKA AN DIE MACHT',
-    avatar: 'https://media.discordapp.net/attachments/1474771451554037801/1525567093863616634/image.png?ex=6a796d52&is=6a781bd2&hm=106bc29289882c1c7526fb808349dd837e19389093908d771d7189f47c7dd3d2&=&format=webp&quality=lossless',
+    avatar: 'https://images-ext-1.discordapp.net/external/ChrUUzz0JrUaa4GoszF7adILMTPM2HN4bmuMVyDYhKY/https/cdn.discordapp.com/avatars/1124258480459616327/6a1a46f22e52730281cc082b1c473617.webp?format=webp',
     aliases: ['BKA AN DIE MACHT', 'BKA'],
     sortOrder: 4
   },
@@ -103,7 +103,7 @@ async function seed() {
 
   await WebsiteStats.findOneAndUpdate(
     { key: 'global' },
-    { $setOnInsert: { totalVisits: 0, visitBaseline: config.visitBaseline, memberBaseline: config.memberBaseline } },
+    { $setOnInsert: { totalVisits: 0, visitBaseline: config.visitBaseline, memberBaseline: config.memberBaseline, smallTradeBaseline: config.smallTradeBaseline, mediumTradeBaseline: config.mediumTradeBaseline, largeTradeBaseline: config.largeTradeBaseline } },
     { upsert: true }
   );
 
