@@ -1,6 +1,6 @@
 const ASSETS = {
-  logo: 'https://media.discordapp.net/attachments/1474771451554037801/1525567093863616634/image.png?ex=6a74d012&is=6a737e92&hm=037caa22bbae6f0658e1bc9e4c4a998a78454175be77f5e1ef817a1dfcb1b9f3&=&format=webp&quality=lossless',
-  banner: 'https://media.discordapp.net/attachments/1474771451554037801/1525567047315230933/image.png?ex=6a74d007&is=6a737e87&hm=4fb0bac1cc4b557e255318d12b2fa92aea54ed80ce453105a15f101e7d1c45e1&=&format=webp&quality=lossless',
+  logo: 'https://media.discordapp.net/attachments/1474771451554037801/1525567093863616634/image.png?ex=6a796d52&is=6a781bd2&hm=106bc29289882c1c7526fb808349dd837e19389093908d771d7189f47c7dd3d2&=&format=webp&quality=lossless',
+  banner: 'https://media.discordapp.net/attachments/1474771451554037801/1525567093863616634/image.png?ex=6a796d52&is=6a781bd2&hm=106bc29289882c1c7526fb808349dd837e19389093908d771d7189f47c7dd3d2&=&format=webp&quality=lossless',
   discordInvite: 'https://discord.gg/HpPSfvjmmT'
 };
 
