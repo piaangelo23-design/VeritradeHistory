@@ -71,8 +71,8 @@ async function loadTrades() {
     <tr>
       <td>${traderCell(t.buyer, t.buyerProfile)}</td>
       <td>${traderCell(t.seller, t.sellerProfile)}</td>
-      <td>${escapeHtml(t.buyerItem)}</td>
-      <td>${escapeHtml(t.sellerItem)}</td>
+      <td>${paymentLabel(t)}</td>
+      <td>${escapeHtml(`${t.buyerItem} -> ${t.sellerItem}`)}</td>
       <td>${paymentLabel(t)}</td>
       <td>${middlemanCell(t.middleman)}</td>
     </tr>
