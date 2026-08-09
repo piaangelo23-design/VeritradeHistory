@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: mm2-tracker-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mm2_mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: mm2_tracker
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: mm2-tracker-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+    volumes:
+      - ./frontend:/app/frontend:ro
+
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile.bot
+    container_name: mm2-tracker-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - backend
+
+volumes:
+  mm2_mongo_data:

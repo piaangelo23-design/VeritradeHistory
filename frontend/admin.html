@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — MM2 Tracker</title>
+  <link rel="icon" href="https://media.discordapp.net/attachments/1474771451554037801/1525567093863616634/image.png?ex=6a74d012&is=6a737e92&hm=037caa22bbae6f0658e1bc9e4c4a998a78454175be77f5e1ef817a1dfcb1b9f3&=&format=webp&quality=lossless">
+  <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+  <div id="navbar"></div>
+
+  <section id="loginSection" class="container">
+    <div class="login-box glass">
+      <h2 style="margin-bottom:1rem">Admin Login</h2>
+      <form id="loginForm">
+        <div class="form-group"><label>Username</label><input id="username" required></div>
+        <div class="form-group"><label>Password</label><input id="password" type="password" required></div>
+        <p id="loginError" style="color:var(--danger);margin-bottom:0.75rem"></p>
+        <button class="btn btn-primary" type="submit">Login</button>
+      </form>
+    </div>
+  </section>
+
+  <section id="adminSection" class="container admin-layout" style="display:none">
+    <aside class="admin-sidebar glass">
+      <h3 style="margin-bottom:1rem">Admin Panel</h3>
+      <ul class="admin-nav">
+        <li><button data-panel="panelOverview" class="active">Overview</button></li>
+        <li><button data-panel="panelSettings">Settings</button></li>
+        <li><button data-panel="panelMiddlemen">Middlemen</button></li>
+        <li><button data-panel="panelLogs">Logs</button></li>
+      </ul>
+      <div style="margin-top:1.5rem;display:flex;flex-direction:column;gap:0.5rem">
+        <button id="refreshBtn" class="btn btn-outline">Refresh Data</button>
+        <button id="testTradeBtn" class="btn btn-outline">Create Test Trade</button>
+        <button id="logoutBtn" class="btn btn-outline">Logout</button>
+      </div>
+    </aside>
+    <div>
+      <div id="panelOverview" class="admin-panel active">
+        <h2 style="margin-bottom:1rem">System Status</h2>
+        <div id="botStatusGrid" class="status-grid"></div>
+      </div>
+      <div id="panelSettings" class="admin-panel">
+        <h2 style="margin-bottom:1rem">Configuration</h2>
+        <div id="settingsForm" class="glass" style="padding:1.25rem"></div>
+      </div>
+      <div id="panelMiddlemen" class="admin-panel">
+        <h2 style="margin-bottom:1rem">Manage Middlemen & Vouches</h2>
+        <div id="middlemenAdmin"></div>
+      </div>
+      <div id="panelLogs" class="admin-panel">
+        <h2 style="margin-bottom:1rem">System Logs</h2>
+        <div id="logsPanel"></div>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer"></div>
+  <script src="/assets/js/app.js"></script>
+  <script src="/assets/js/admin.js"></script>
+</body>
+</html>

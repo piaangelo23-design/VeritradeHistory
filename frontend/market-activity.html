@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Market Activity - MM2 Tracker</title>
+  <link rel="icon" href="https://media.discordapp.net/attachments/1474771451554037801/1525567093863616634/image.png?format=webp&quality=lossless">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div id="navbar"></div>
+  <main class="container" style="padding:2rem 0 4rem">
+    <div class="section-header">
+      <div><p class="eyebrow">Authorized data only</p><h1>Market Activity</h1></div>
+      <span id="marketStatus" style="color:var(--text-secondary)">Loading...</span>
+    </div>
+    <section class="stats-grid" aria-label="Market totals">
+      <div class="stat-card glass"><span>Total trades</span><strong id="totalTrades">-</strong></div>
+      <div class="stat-card glass"><span>Trade volume</span><strong id="tradeVolume">-</strong></div>
+      <div class="stat-card glass"><span>Last update</span><strong id="lastUpdate">-</strong></div>
+    </section>
+    <section class="glass" style="margin-top:1.5rem;padding:1.25rem">
+      <h2>Trade volume history</h2>
+      <div style="height:320px"><canvas id="volumeChart" aria-label="Trade volume history"></canvas></div>
+      <p id="emptyState" style="display:none;color:var(--text-secondary)">No authorized market snapshots are available yet.</p>
+    </section>
+  </main>
+  <div id="footer"></div>
+  <script src="/assets/js/app.js"></script>
+  <script src="/assets/js/market.js"></script>
+</body>
+</html>

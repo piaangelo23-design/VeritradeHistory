@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trade History — MM2 Tracker</title>
+  <link rel="icon" href="https://media.discordapp.net/attachments/1474771451554037801/1525567093863616634/image.png?ex=6a74d012&is=6a737e92&hm=037caa22bbae6f0658e1bc9e4c4a998a78454175be77f5e1ef817a1dfcb1b9f3&=&format=webp&quality=lossless">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <div id="navbar"></div>
+  <main class="container" style="padding:2rem 0 4rem">
+    <div class="section-header"><h2>Trade History</h2></div>
+    <div class="filters glass" style="padding:1rem">
+      <input id="searchInput" placeholder="Search buyer, seller, items...">
+      <select id="sortSelect">
+        <option value="completedAt">Date</option>
+        <option value="value">Value</option>
+        <option value="buyer">Buyer</option>
+        <option value="seller">Seller</option>
+        <option value="tradeSize">Trade Size</option>
+      </select>
+      <select id="orderSelect">
+        <option value="desc">Descending</option>
+        <option value="asc">Ascending</option>
+      </select>
+      <select id="sizeFilter">
+        <option value="">All Sizes</option>
+        <option value="small">Small</option>
+        <option value="medium">Medium</option>
+        <option value="large">Large</option>
+      </select>
+      <select id="mmFilter">
+        <option value="">All Middlemen</option>
+        <option value="none">Direct Trade</option>
+        <option value="Nexus">Nexus</option>
+        <option value="Sheikh">Sheikh Yazan</option>
+      </select>
+      <input id="dateFrom" type="date">
+      <input id="dateTo" type="date">
+      <button id="applyFilters" class="btn btn-primary">Apply</button>
+    </div>
+    <div class="table-wrap glass" style="padding:0.5rem">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th><th>Buyer</th><th>Seller</th><th>Item Given</th><th>Item Received</th>
+            <th>Value</th><th>Middleman</th><th>Trade Size</th><th>Status</th><th>Verification</th>
+          </tr>
+        </thead>
+        <tbody id="tradesBody"></tbody>
+      </table>
+    </div>
+    <div class="pagination">
+      <button id="prevPage" class="btn btn-outline">Previous</button>
+      <span id="pageInfo"></span>
+      <button id="nextPage" class="btn btn-outline">Next</button>
+    </div>
+  </main>
+  <div id="footer"></div>
+  <script src="/assets/js/app.js"></script>
+  <script src="/assets/js/trades.js"></script>
+</body>
+</html>

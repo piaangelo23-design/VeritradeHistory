@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MM2 Tracker — Premium Middleman & Trade Tracker</title>
+  <link rel="icon" href="https://media.discordapp.net/attachments/1474771451554037801/1525567093863616634/image.png?ex=6a74d012&is=6a737e92&hm=037caa22bbae6f0658e1bc9e4c4a998a78454175be77f5e1ef817a1dfcb1b9f3&=&format=webp&quality=lossless">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <div id="navbar"></div>
+
+  <header class="hero">
+    <div class="hero-banner" style="background-image:url('https://media.discordapp.net/attachments/1474771451554037801/1525567047315230933/image.png?ex=6a74d007&is=6a737e87&hm=4fb0bac1cc4b557e255318d12b2fa92aea54ed80ce453105a15f101e7d1c45e1&=&format=webp&quality=lossless')"></div>
+    <div class="container hero-content">
+      <div>
+        <h1>Premium <span class="gradient-text">MM2 Trade Tracker</span></h1>
+        <p>Real verified trades from our Discord server. Trusted middlemen, live trade tracking, value data, and complete trade history — no fake statistics.</p>
+        <div class="hero-actions">
+          <a href="/trades.html" class="btn btn-primary">View Trade History</a>
+          <a href="https://discord.gg/HpPSfvjmmT" class="btn btn-discord" target="_blank" rel="noopener">Join Discord</a>
+        </div>
+      </div>
+      <div class="discord-card glass">
+        <img class="logo" src="https://media.discordapp.net/attachments/1474771451554037801/1525567093863616634/image.png?ex=6a74d012&is=6a737e92&hm=037caa22bbae6f0658e1bc9e4c4a998a78454175be77f5e1ef817a1dfcb1b9f3&=&format=webp&quality=lossless" alt="Discord Server">
+        <h3>Our Discord Server</h3>
+        <p style="color:var(--text-secondary);margin:0.5rem 0 1rem">Join for trusted middleman services and verified trade tracking.</p>
+        <a href="https://discord.gg/HpPSfvjmmT" class="btn btn-discord" target="_blank" rel="noopener">Join Discord</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="vouchReminder" class="vouch-reminder glass"></div>
+
+    <section>
+      <div class="section-header"><h2>Live Statistics</h2></div>
+      <div class="stats-grid">
+        <div class="stat-card glass"><div class="stat-value" id="statSmall">0</div><div class="stat-label">Small Completed Trades</div></div>
+        <div class="stat-card glass"><div class="stat-value" id="statMedium">0</div><div class="stat-label">Medium Completed Trades</div></div>
+        <div class="stat-card glass"><div class="stat-value" id="statLarge">0</div><div class="stat-label">Large Completed Trades</div></div>
+        <div class="stat-card glass"><div class="stat-value" id="statTotalTrades">0</div><div class="stat-label">Total Completed Trades</div></div>
+        <div class="stat-card glass"><div class="stat-value" id="statVouches">0</div><div class="stat-label">Total Vouches</div></div>
+        <div class="stat-card glass"><div class="stat-value" id="statVisits">0</div><div class="stat-label">Website Visits</div></div>
+        <div class="stat-card glass"><div class="stat-value" id="statMembers">0</div><div class="stat-label">Total Members</div></div>
+        <div class="stat-card glass"><div class="stat-value" id="statOnline">0</div><div class="stat-label">Online Members</div></div>
+        <div class="stat-card glass"><div class="stat-value" id="statActiveMM">0</div><div class="stat-label">Active Middlemen</div></div>
+        <div class="stat-card glass"><div class="stat-value" id="statValueChanges">0</div><div class="stat-label">Value Changes</div></div>
+        <div class="stat-card glass"><div class="stat-value" id="statNewItems">0</div><div class="stat-label">New Items</div></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-header"><h2>Live Trade Success</h2></div>
+      <div id="liveTrade" class="live-trade-card glass waiting"><p>Waiting for the next verified trade...</p></div>
+    </section>
+
+    <section>
+      <div class="section-header">
+        <h2>Trusted Middlemen</h2>
+        <a href="/middlemen.html" class="btn btn-outline">View All</a>
+      </div>
+      <div class="grid-3" id="middlemenPreview"></div>
+    </section>
+  </main>
+
+  <div id="footer"></div>
+  <script src="/assets/js/app.js"></script>
+  <script src="/assets/js/home.js"></script>
+</body>
+</html>
