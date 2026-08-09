@@ -53,7 +53,7 @@ async function loadTrades() {
       <td>${t.status}</td>
       <td>${t.verified ? '✓ Verified' : t.isTest ? '⚠ Test' : '—'}</td>
     </tr>
-  `).join('') : '<tr><td colspan="9" style="text-align:center;color:var(--text-secondary)">No trades found</td></tr>';
+  `).join('') : '<tr><td colspan="9" style="text-align:center;color:var(--text-secondary)">No verified Money/Robux-to-item trades recorded yet.</td></tr>';
 
   document.getElementById('pageInfo').textContent = `Page ${pagination.page} of ${pagination.pages || 1} (${pagination.total} total)`;
 }
