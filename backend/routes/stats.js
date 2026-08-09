@@ -1,11 +1,11 @@
 const express = require('express');
-const { getStats, incrementVisit } = require('../services/tradeService');
+const { getStats, recalculateStats, incrementVisit } = require('../services/tradeService');
 const { getDashboardStatus } = require('../services/syncService');
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const stats = await getStats();
+  const stats = await recalculateStats();
   return res.json({ stats });
 });
 
